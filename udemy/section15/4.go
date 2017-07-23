@@ -4,13 +4,20 @@ import "fmt"
 
 func main() {
 	f := factorial(4)
-	fmt.Println(f)
+	for n := range f {
+		fmt.Println(n)
+	}
 }
 
-func factorial(n int) int {
+func factorial(n int) chan int {
+	c := make(chan int)
 	total := 1
-	for i := n; i > 0; i-- {
-		total *= 1
-	}
-	return total
+	go func() {
+		for i := n; i > 0; i-- {
+			total *= i
+		}
+		c <- total
+		close(c)
+	}()
+	return c
 }
